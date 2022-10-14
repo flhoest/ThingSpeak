@@ -18,7 +18,7 @@
 	function tsGetLast24Data($apiKey,$channelID)
 	{
 		$startOfDay=date("Y-m-d%2000:00:00");
-	    $API_URL="api.thingspeak.com/channels/".$channelID."/feeds.json?api_key=".$apiKey."&start=".$startOfDay."&timezone=Europe/Brussels";
+	    	$API_URL="api.thingspeak.com/channels/".$channelID."/feeds.json?api_key=".$apiKey."&start=".$startOfDay."&timezone=Europe/Brussels";
 	     
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
@@ -35,7 +35,7 @@
 		$result = curl_exec($curl);
 		curl_close($curl);
 		usleeep(50*1000);
-		 return json_decode($result);	
+		return json_decode($result);	
 	}
 
 	// ------------------------------------------------------------------
@@ -44,9 +44,8 @@
 
 	function tsGetLastFieldData($apiKey,$channelID,$fieldID)
 	{
-	    $API_URL="api.thingspeak.com/channels/".$channelID."/fields/".$fieldID.".json?api_key=".$apiKey."&results=1&timezone=Europe/Brussels";
-	     
-		$curl = curl_init();
+	    	$API_URL="api.thingspeak.com/channels/".$channelID."/fields/".$fieldID.".json?api_key=".$apiKey."&results=1&timezone=Europe/Brussels";
+	    	$curl = curl_init();
 		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array(
 							"Authorization: Bearer ".$apiKey,
