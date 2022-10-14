@@ -34,7 +34,7 @@
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		$result = curl_exec($curl);
 		curl_close($curl);
-
+		usleeep(50*1000);
 		 return json_decode($result);	
 	}
 
@@ -60,7 +60,7 @@
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		$result = curl_exec($curl);
 		curl_close($curl);
-
+		usleeep(50*1000);
 		return trim(json_decode($result)->feeds[0]->field2);	
 	}
 		
