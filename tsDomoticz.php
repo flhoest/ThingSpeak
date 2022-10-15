@@ -14,8 +14,8 @@
 	date_default_timezone_set('Europe/Brussels');
 	// ThingSpeak Channel ID for retrienving data 
 	$channelID="<channel_id>";
-  // ThingSpeak read API key
-  $apiKey="<read_api_key>";
+  	// ThingSpeak read API key
+  	$apiKey="<read_api_key>";
 	$sensorIDX=<domoticz_sensor_idx>;
 	$domoticzIP="<domoticz_server_ip>";
 
@@ -35,7 +35,7 @@
 
 		$API=$domoticzIP;
 
-   	$curl = curl_init();
+   		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
    		
 		curl_setopt($curl, CURLOPT_POST, 1);
