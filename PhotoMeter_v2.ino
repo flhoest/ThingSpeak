@@ -7,7 +7,7 @@
   (c) 2023 - Frederic Lhoest (and Anthony Guerrier)
   Special thanks to Dominique B.
   
-  Send solar power productionto Thingspeak
+  Send solar power production to Thingspeak
   ESP8266 + SCT-013 100A + Thingspeak
   Mostly inspired by anthonyguerrier@free.fr from https://www.youtube.com/watch?v=smgw67uRQmw (in French)
 
