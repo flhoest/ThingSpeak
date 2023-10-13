@@ -1,0 +1,108 @@
+
+% _____________________________________________________________
+%
+% _______ _______ _______ _____   _______ ______ 
+%|   |   |   _   |_     _|     |_|   _   |   __ \
+%|       |       | |   | |       |       |   __ <
+%|__|_|__|___|___| |___| |_______|___|___|______/
+% 
+% Solar Production aggregator
+% (c) 2023 - Frederic Lhoest - Let's Talk About Tech
+% https://www.lets-talk-about.tech/ - @flhoest
+% _____________________________________________________________
+
+%% ====================
+%% Initialize variables
+%% ====================
+
+% Define ThingSpeak channel and API key
+channelID = <channel_id>;
+
+% Define ThingSpeak API Read key
+readKey = '<read_key>';
+
+% Define ThingSpeak API Write key
+writeKey = '<write_key';
+
+% Define data interval
+intervalInSec= 25;
+
+% Define field ID for production value
+fieldID = 2;
+
+%% =================================
+%% Innitialize time and timezone
+%% =================================
+
+% Get current date and time
+%now = datetime('now', 'TimeZone', 'Europe/Brussels');
+now = datetime('now');
+
+% Compute start and end times for current 24-hour period
+start_time = datetime(now.Year, now.Month, now.Day, 0, 0, 1);
+end_time = datetime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+
+%% =====================================
+%% Retrieve data from ThingSpeak channel
+%% =====================================
+
+% Retrieve data from ThingSpeak channel
+url = sprintf('https://api.thingspeak.com/channels/%d/fields/%d.json?start=%s&end=%s&timezone=CET&apikey=%s',channelID, fieldID, datestr(start_time, 'yyyy-mm-dd HH:MM:SS'), datestr(end_time, 'yyyy-mm-dd HH:MM:SS'), readKey);
+response = webread(url);
+
+% Extract production values from response
+data = [response.feeds.field2];
+
+% Convert string to array
+% Define the delimiter as CR LF
+delimiter = '\r\n';
+
+% Use strsplit to split the string into an array of items
+production_values = strsplit(data, delimiter);
+
+% Convert string values to float
+production_values = str2double(production_values);
+
+%% ========================================================
+%% Compute the data and convert them into prodcution in kWh
+%% ========================================================
+
+% Compute sum production in watts but first need to cleaup the string from CR LF
+
+% Init targer variable for the total production
+total_production = 0;
+
+for i = 1:numel(production_values)
+    % Remove unwanted characters (space, CR/LF)
+    tmp=strtrim(string(production_values(i)));
+    % Convert the new value into double
+    tmp=double(tmp);
+    
+    if isnumeric(tmp)
+        % If value is different than NaN take it into account
+        if ~isnan(tmp) 
+            total_production = total_production + tmp;
+        end
+    end
+end
+
+% Convert W to kW
+total_production = total_production / 1000;
+
+% Calculate time interval
+time_interval_hours = length(production_values) * (intervalInSec/3600);
+
+% Calculate production in kWh
+total_production = (total_production / length(production_values)) * time_interval_hours;
+
+% (optional) Display results
+%fprintf('Production so far is : %.2f kWh\n', total_production);
+
+%% ==========================================
+% Write results into another ThingSpeak field
+%% ==========================================
+
+% Write total production to ThingSpeak channel
+data = struct('api_key',writeKey,'field4',total_production,'channel_id',channelID)
+webwrite('https://api.thingspeak.com/update',data)
+
